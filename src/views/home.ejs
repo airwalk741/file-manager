@@ -16,23 +16,36 @@
     <script src="/bootstrap/bootstrap.js" type="module"></script>
     <script src="/views/home.js" type="module"></script>
 
-    <div class="container mt-5">
-      <div class="mb-5">
-        <table class="table table-bordered">
-          <tbody class="file-list"></tbody>
-        </table>
-      </div>
+    <div class="m-5">
+      <div class="row">
+        <div class="mb-5 col table-container">
+          <table class="table table-bordered">
+            <thead class="text-center">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Type</th>
+                <th scope="col">Name</th>
+                <th scope="col">Size</th>
+                <th scope="col">Time</th>
+              </tr>
+            </thead>
+            <tbody class="file-list text-center"></tbody>
+          </table>
+        </div>
 
-      <textarea
-        class="form-control mb-5 linux-result"
-        id=""
-        rows="15"
-      ></textarea>
+        <div class="col">
+          <textarea
+            class="form-control mb-4 linux-result"
+            id=""
+            rows="15"
+          ></textarea>
 
-      <span id="current-location"><%=location%></span>
-      <div class="d-flex justify-content-between">
-        <input type="text" class="form-control linux-input me-5" />
-        <button type="button" class="btn btn-primary linux-btn">Run</button>
+          <span id="current-location"><%=location%></span>
+          <div class="d-flex justify-content-between">
+            <input type="text" class="form-control linux-input me-5" />
+            <button type="button" class="btn btn-primary linux-btn">Run</button>
+          </div>
+        </div>
       </div>
     </div>
   </body>

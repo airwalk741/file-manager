@@ -1,0 +1,12 @@
+.file-name {
+  cursor: pointer;
+}
+
+.file-name:hover {
+  color: crimson;
+}
+
+.table-container {
+  height: 700px;
+  overflow: auto;
+}
