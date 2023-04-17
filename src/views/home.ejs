@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>file manager</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/bootstrap/bootstrap.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="/views/home.css" />
+  </head>
+
+  <body>
+    <script src="/bootstrap/bootstrap.js" type="module"></script>
+    <script src="/views/home.js" type="module"></script>
+
+    <div class="container mt-5">
+      <div class="mb-5">
+        <table class="table table-bordered">
+          <tbody class="file-list"></tbody>
+        </table>
+      </div>
+
+      <textarea
+        class="form-control mb-5 linux-result"
+        id=""
+        rows="15"
+      ></textarea>
+
+      <span id="current-location"><%=location%></span>
+      <div class="d-flex justify-content-between">
+        <input type="text" class="form-control linux-input me-5" />
+        <button type="button" class="btn btn-primary linux-btn">Run</button>
+      </div>
+    </div>
+  </body>
+</html>
