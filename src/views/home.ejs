@@ -14,36 +14,81 @@
 
   <body>
     <script src="/bootstrap/bootstrap.js" type="module"></script>
-    <script src="/views/home.js" type="module"></script>
+    <script src="/views/table.js" type="module"></script>
+    <script src="/views/linux.js" type="module"></script>
+
+    <div class="layerPopup">
+      <div class="spinner"></div>
+    </div>
 
     <div class="m-5">
       <div class="row">
-        <div class="mb-5 col table-container">
-          <table class="table table-bordered">
-            <thead class="text-center">
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Type</th>
-                <th scope="col">Name</th>
-                <th scope="col">Size</th>
-                <th scope="col">Time</th>
-              </tr>
-            </thead>
-            <tbody class="file-list text-center"></tbody>
-          </table>
+        <div class="mb-5 col">
+          <div class="d-flex justify-content-between mb-4">
+            <select
+              class="form-select folder-file-select"
+              aria-label="Default select example"
+            >
+              <option value="1" selected>전체</option>
+              <option value="2">폴더</option>
+              <option value="3">파일</option>
+            </select>
+            <input type="text" class="form-control table-search-input" />
+          </div>
+          <div class="table-container">
+            <table class="table table-bordered">
+              <thead class="text-center">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Size</th>
+                  <th scope="col">Time</th>
+                </tr>
+              </thead>
+              <tbody class="file-list text-center"></tbody>
+            </table>
+          </div>
         </div>
 
         <div class="col">
-          <textarea
-            class="form-control mb-4 linux-result"
-            id=""
-            rows="15"
-          ></textarea>
+          <div class="">
+            <textarea
+              class="form-control mb-4 linux-result"
+              id=""
+              rows="15"
+            ></textarea>
 
-          <span id="current-location"><%=location%></span>
-          <div class="d-flex justify-content-between">
-            <input type="text" class="form-control linux-input me-5" />
-            <button type="button" class="btn btn-primary linux-btn">Run</button>
+            <span id="current-location"><%=location%></span>
+            <div class="d-flex justify-content-between">
+              <input type="text" class="form-control linux-input me-5" />
+              <button type="button" class="btn btn-primary linux-btn">
+                Run
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="alert alert-primary text-center" role="alert">
+          변경 완료
+        </div>
+        <div class="alert alert-danger text-center" role="alert">에러</div>
+        <textarea
+          class="form-control mb-4 file-update-text"
+          id=""
+          rows="15"
+        ></textarea>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="update-file-name"></span>
+          <div>
+            <button type="button" class="btn btn-primary file-update-btn">
+              수정
+            </button>
+            <button type="button" class="btn btn-danger ms-3 file-cancel-btn">
+              취소
+            </button>
           </div>
         </div>
       </div>

@@ -4,8 +4,8 @@ const Routes = require("./src/routes/index");
 const bodyParser = require("body-parser");
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 
 app.set("views", "src/views");
 app.set("view engine", "ejs");

@@ -1,21 +1,33 @@
-const { exec } = require("child_process");
+const { exec, spawn } = require("child_process");
 const fs = require("fs");
 let currentLocation = process.execPath;
 
+const korean = /\s/g;
+
 let linuxText = [];
 
-// 처음 화면 로드 될때 table 아이템 정의
+// table 아이템 정의
 const windowLoad = (req, res) => {
   const { path } = req.query;
 
-  currentLocation = path;
-  const value = `
-    cd ${currentLocation}
-    ls -a
-  `;
+  currentLocation = decodeURIComponent(path);
+  let value = "";
+
+  if (korean.test(currentLocation)) {
+    value = `
+      cd "${currentLocation}"
+      ls -a
+    `;
+  } else {
+    value = `
+      cd ${currentLocation}
+      ls -a
+    `;
+  }
 
   exec(value, async (error, stdout, stderr) => {
     if (error !== null) {
+      console.log(error);
       return res.status(500).json({ error, stderr });
     } else {
       const fileList = [];
@@ -45,6 +57,7 @@ const windowLoad = (req, res) => {
       });
       await Promise.all([...promise]);
       if (isError) {
+        console.log(isError);
         return res.status(500).json({ error: isError });
       }
       return res.status(200).json({ stdout, fileList, currentLocation });
@@ -57,6 +70,7 @@ const homeView = (req, res) => {
   linuxText = [];
   exec("pwd", (error, stdout, stderr) => {
     if (error !== null) {
+      console.log(error);
       return res.status(500).json({ error, stderr });
     } else {
       currentLocation = stdout.replace("\n", "");
@@ -69,19 +83,35 @@ const homeView = (req, res) => {
 const typingLinux = (req, res) => {
   const { text } = req.body;
   if (text.slice(0, 2) === "cd") {
-    const value =
-      currentLocation === __dirname
-        ? `
+    let value = "";
+    if (korean.test(text)) {
+      value =
+        currentLocation === __dirname
+          ? `
           ${text}
           pwd
         `
-        : `
+          : `
+        cd "${currentLocation}" 
+        cd "${text.slice(3)}" 
+        pwd
+        `;
+    } else {
+      value =
+        currentLocation === __dirname
+          ? `
+          ${text}
+          pwd
+        `
+          : `
         cd ${currentLocation} 
         ${text} 
         pwd
         `;
+    }
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
+        console.log(error);
         return res.status(500).json({ error, stderr });
       } else {
         currentLocation = stdout.replace("\n", "");
@@ -91,18 +121,38 @@ const typingLinux = (req, res) => {
     });
   } else {
     const value = `
-      cd ${currentLocation}
+      cd "${currentLocation}"
       ${text}
     `;
 
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
+        console.log(error);
         return res.status(500).json({ error, stderr });
       } else {
         linuxText.push(stdout);
+
         return res.status(200).json({ stdout, currentLocation, linuxText });
       }
     });
+  }
+};
+
+// 파일 수정하기
+const updateFile = (req, res) => {
+  const data = req.body;
+
+  const {
+    text,
+    file: { path },
+  } = data;
+
+  try {
+    fs.writeFileSync(`${path}`, text);
+    return res.status(200).json();
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ err });
   }
 };
 
@@ -110,4 +160,5 @@ module.exports = {
   homeView,
   typingLinux,
   windowLoad,
+  updateFile,
 };

@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { homeView, typingLinux, windowLoad } = require("../../controllers/home");
+const {
+  homeView,
+  typingLinux,
+  windowLoad,
+  updateFile,
+} = require("../../controllers/home");
 
 const BASE_URL = "/";
 
@@ -15,6 +20,11 @@ module.exports = (app) => {
     homeView(req, res);
   });
 
+  // 파일 변경
+  router.put("/files", (req, res) => {
+    updateFile(req, res);
+  });
+
   // hash 변경시 파일 및 디렉토리 확인
   router.get("/api/load", (req, res) => {
     windowLoad(req, res);
@@ -24,8 +34,6 @@ module.exports = (app) => {
   router.post("/", (req, res) => {
     typingLinux(req, res);
   });
-
-  router.put("/", (req, res) => {});
 
   router.delete("/", (req, res) => {});
 
