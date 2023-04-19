@@ -25,14 +25,24 @@ export const linuxResult = document.querySelector(".linux-result");
 //loading
 const loading = document.querySelector(".layerPopup");
 
+/**
+ * 로딩스피너 시작
+ */
 export const startLoading = () => {
   loading.style.display = "block";
 };
+
+/**
+ * 로딩스피너 끝
+ */
 export const endLoading = () => {
   loading.style.display = "none";
 };
 
-// alert
+/**
+ * 메세지
+ * @param {number} status 200 ok else err
+ */
 export const startAlert = (status) => {
   if (status === 200) {
     alertPrimary.style.display = "block";

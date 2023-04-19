@@ -1,19 +1,24 @@
+"use strict";
+
 const { exec, spawn } = require("child_process");
 const fs = require("fs");
-let currentLocation = process.execPath;
 
-const korean = /\s/g;
+// javascript exec가 위치(경로)를 저장하지 못합니다. (exec 실행 끝나면 서버 실행 경로로 돌아갑니다.)
+// 그래서 위치를 저장해야합니다.
+// 저장된 위치를 먼저 이동한 후 text로 입력된 리눅스 명령어를 실행해야합니다.
+// example
+// cd [저장된 경로] && ls -a
+let currentLocation = process.execPath;
 
 let linuxText = [];
 
 // table 아이템 정의
 const windowLoad = (req, res) => {
-  const { path } = req.query;
-
+  const { path, spacing } = req.query;
   currentLocation = decodeURIComponent(path);
+  const decodeSpace = decodeURIComponent(spacing);
   let value = "";
-
-  if (korean.test(currentLocation)) {
+  if (decodeSpace === "true") {
     value = `
       cd "${currentLocation}"
       ls -a
@@ -25,6 +30,7 @@ const windowLoad = (req, res) => {
     `;
   }
 
+  // 실행코드 (ls -a)
   exec(value, async (error, stdout, stderr) => {
     if (error !== null) {
       console.log(error);
@@ -39,7 +45,7 @@ const windowLoad = (req, res) => {
         try {
           const stats = fs.statSync(`${currentLocation}/${item}`);
           let data = "";
-          if (!stats.isDirectory()) {
+          if (!stats.isDirectory() && stats.size < 1024 * 1024 * 15) {
             data = fs.readFileSync(`${currentLocation}/${item}`, "utf-8");
           }
 
@@ -79,36 +85,24 @@ const homeView = (req, res) => {
   });
 };
 
-// 리눅스 명령어 입력
+// 리눅스 명령어 입력 (cd와 아닐때 구분)
 const typingLinux = (req, res) => {
   const { text } = req.body;
+
   if (text.slice(0, 2) === "cd") {
     let value = "";
-    if (korean.test(text)) {
-      value =
-        currentLocation === __dirname
-          ? `
-          ${text}
-          pwd
-        `
-          : `
-        cd "${currentLocation}" 
-        cd "${text.slice(3)}" 
-        pwd
-        `;
-    } else {
-      value =
-        currentLocation === __dirname
-          ? `
-          ${text}
-          pwd
-        `
-          : `
-        cd ${currentLocation} 
-        ${text} 
-        pwd
-        `;
-    }
+
+    value =
+      currentLocation === __dirname
+        ? `
+      ${text}
+      pwd
+    `
+        : `
+    cd ${currentLocation} 
+    ${text} 
+    pwd
+    `;
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);
@@ -156,9 +150,23 @@ const updateFile = (req, res) => {
   }
 };
 
+// config.txt 수정
+const updateConfigTxt = (req, res) => {
+  const { resultText, file } = req.body;
+
+  try {
+    fs.writeFileSync(`${file.path}`, resultText);
+    return res.status(200).json();
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ err });
+  }
+};
+
 module.exports = {
   homeView,
   typingLinux,
   windowLoad,
   updateFile,
+  updateConfigTxt,
 };

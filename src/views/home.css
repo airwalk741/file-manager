@@ -21,17 +21,19 @@
 }
 
 .alert-primary {
-  position: absolute;
-  width: 200px;
-  right: 100px;
-  margin: 0 auto;
+  position: fixed;
+  width: 300px;
+  left: 40%;
+  z-index: 1000;
+  text-align: center;
   display: none;
 }
 .alert-danger {
-  position: absolute;
-  width: 200px;
-  right: 100px;
-  margin: 0 auto;
+  position: fixed;
+  width: 300px;
+  left: 40%;
+  z-index: 1000;
+  text-align: center;
   display: none;
 }
 
@@ -66,4 +68,25 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.CodeMirror-lines {
+  min-height: 200px !important;
+}
+
+.test {
+  visibility: none;
+  position: relative;
+}
+
+/* .device-table-name {
+  width: 500px;
+} */
+
+tr {
+  vertical-align: middle;
+}
+
+.config-file-info {
+  display: none;
 }

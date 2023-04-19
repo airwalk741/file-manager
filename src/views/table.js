@@ -13,9 +13,33 @@ import {
   startAlert,
 } from "/views/values.js";
 
-let fileList = [];
-let targetFile = "";
+import { configParsing } from "/views/config/config.js";
 
+export let fileList = [];
+let targetFile = "";
+let editor = CodeMirror.fromTextArea(fileUpdateText, {
+  lineNumbers: true, //왼쪽 라인넘버 표기
+  lineWrapping: true, //줄바꿈. 음.. break-word;
+  theme: "darcula", //테마는 맘에드는 걸로.
+  // mode: "text/x-sql", //모드는 sql 모드
+  value: fileUpdateText.value,
+});
+
+// // 파일 선택 안했으면 입력 안하게
+// fileUpdateText.addEventListener("keypress", (e) => {
+//   if (!targetFile) {
+//     e.preventDefault();
+//   }
+// });
+
+// 파일 선택 안했으면 입력 못하도록
+editor.on("keypress", (_, e) => {
+  if (!targetFile) {
+    e.preventDefault();
+  }
+});
+
+// 수정하기
 fileUpdateBtn.addEventListener("click", () => {
   if (!targetFile) return;
   startLoading();
@@ -25,7 +49,7 @@ fileUpdateBtn.addEventListener("click", () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      text: fileUpdateText.value,
+      text: editor.getValue(),
       file: targetFile,
     }),
   })
@@ -36,7 +60,7 @@ fileUpdateBtn.addEventListener("click", () => {
           if (file.path === targetFile.path) {
             return {
               ...targetFile,
-              data: fileUpdateText.value,
+              data: editor.getValue(),
             };
           }
           return file;
@@ -58,10 +82,14 @@ fileUpdateBtn.addEventListener("click", () => {
     });
 });
 
+// 취소하기
 fileCanceleBtn.addEventListener("click", () => {
   if (targetFile) {
-    console.log(targetFile.data);
-    fileUpdateText.value = targetFile.data;
+    fileUpdateText.value = "";
+    targetFile = "";
+    fileUpdateName.textContent = "";
+    // console.log(targetFile.data);
+    editor.getDoc().setValue("");
   }
 });
 
@@ -81,7 +109,7 @@ folderFileSelect.addEventListener("change", () => {
  * 첫 화면 로딩시 리다이렉트
  */
 window.addEventListener("load", () => {
-  if (!window.location.pathname.includes("/files/")) {
+  if (!window.location.hash) {
     window.location.href = decodeURIComponent(
       `/files/#/${currentLocation.textContent}`
     );
@@ -93,6 +121,10 @@ window.addEventListener("load", () => {
   }
 });
 
+/**
+ * URL 현경 추적
+ * @param {*} e
+ */
 function locationHashChanged(e) {
   currentLocation.innerText = decodeURIComponent(window.location.hash.slice(2));
   ReqLoadItem();
@@ -105,12 +137,14 @@ window.onhashchange = locationHashChanged;
  */
 function ReqLoadItem() {
   const hash = window.location.hash.slice(2);
-
+  const decode = decodeURIComponent(hash);
+  const korean = /\s/g;
   const params = {
-    path: hash,
+    path: decode,
+    spacing: korean.test(decode),
   };
 
-  const queryString = new URLSearchParams(params).toString();
+  const queryString = new URLSearchParams(params);
   const requrl = `/api/load/?${queryString}`;
   startLoading();
   fetch(requrl, {
@@ -149,14 +183,28 @@ function goDirectory(directory) {
   ReqLoadItem();
 }
 
-// 파일 읽기
+/**
+ * 파일 선택
+ * config 파일이면 config 관련, 아니면 그냥 text
+ * @param {*} file
+ */
 function readFile(file) {
-  targetFile = file;
-  fileUpdateText.value = file.data;
-  fileUpdateName.textContent = file.name;
+  if (file.data) {
+    configParsing(file.data, file);
+    targetFile = file;
+    fileUpdateText.value = file.data;
+    // console.log(file.data);
+    fileUpdateName.textContent = file.name;
+    editor.getDoc().setValue(fileUpdateText.value);
+    editor.setSize("100%", "100%");
+  }
 }
 
-// 파일 시간
+/**
+ * 파일의 시간구하기
+ * @param {날짜관련} data
+ * @returns
+ */
 function currentDate(data) {
   const resUtc = new Date(data);
   const year = resUtc.getFullYear();
@@ -170,22 +218,28 @@ function currentDate(data) {
   return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 }
 
-// 파일 사이즈 계산
+/**
+ * 파일 사이즈 고르기
+ * @param {number} size 계산할 사이즈
+ * @returns
+ */
 function getByteSize(size) {
-  const byteUnits = ["KB", "MB", "GB", "TB"];
-
-  for (let i = 0; i < byteUnits.length; i++) {
-    size = Math.floor(size / 1024);
-
-    if (size < 1024) return size.toFixed(1) + byteUnits[i];
-  }
+  var hz;
+  if (size < 1024) hz = size + " B";
+  else if (size < 1024 * 1024) hz = (size / 1024).toFixed(2) + " KB";
+  else if (size < 1024 * 1024 * 1024)
+    hz = (size / 1024 / 1024).toFixed(2) + " MB";
+  else hz = (size / 1024 / 1024 / 1024).toFixed(2) + " GB";
+  return hz;
 }
 
-//테이블 그리기
+/**
+ * 상단 테이블 그리기
+ */
 function drawTable() {
   const tbody = document.querySelector(".file-list");
 
-  const trList = document.querySelectorAll("tbody > tr");
+  const trList = document.querySelectorAll(".file-list > tr");
 
   for (let item of trList) {
     item.remove();
@@ -236,7 +290,9 @@ function drawTable() {
         });
       }
 
-      nametd.setAttribute("class", "file-name");
+      if (item.data || item.folder) {
+        nametd.setAttribute("class", "file-name");
+      }
 
       tr.appendChild(indextd);
       tr.appendChild(typetd);
@@ -246,4 +302,13 @@ function drawTable() {
 
       tbody.appendChild(tr);
     });
+}
+
+/**
+ * config 파일 변경했으면 상단 테이블 다시 그리기
+ * @param {*} newData 변경된 fileList
+ */
+export function updateNewFileList(newData) {
+  fileList = newData;
+  drawTable();
 }

@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "codemirror": "^6.0.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "nodemon": "^2.0.22",
@@ -21,7 +22,12 @@
   "pkg": {
     "scripts": "*.js",
     "targets": [
-      "node14-macos-arm64"
+      "node14-macos-arm64",
+      "node14-macos-x64",
+      "node14-linux-arm64",
+      "node14-linux-x64",
+      "node14-windows-arm64",
+      "node14-windows-x64"
     ],
     "assets": [
       "src/**/*"

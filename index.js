@@ -14,7 +14,17 @@ app.use(express.static(__dirname + "/src"));
 
 Routes(app);
 
-const port = 8088;
+let port = 8088; // 기본 포트
+let isPort = false;
+for (let item of process.argv) {
+  if (isPort) {
+    port = Number(item);
+    break;
+  }
+  if (item === "-p") {
+    isPort = true;
+  }
+}
 
 app.listen(port, () => {
   console.log(`server is listening at http://localhost:${port}`);

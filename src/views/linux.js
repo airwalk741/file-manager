@@ -16,11 +16,21 @@ linuxInput.addEventListener("keypress", (e) => {
   }
 });
 
+linuxResult.addEventListener("keypress", (e) => {
+  e.preventDefault();
+});
+
 /**
  * 리눅스 명령어 실행
  */
 function ReqLinux() {
+  if (linuxInput.value === "clear") {
+    linuxResult.value = "";
+    linuxInput.value = "";
+    return;
+  }
   startLoading();
+
   fetch("/", {
     method: "POST",
     headers: {
@@ -40,8 +50,10 @@ function ReqLinux() {
         let textValue = "";
 
         for (let item of linuxText) {
-          const value = item.replaceAll("\n", "\t");
-          textValue += `$ ${value}\n`;
+          // const value = item.replaceAll("\n", "\t");
+          const value = item;
+          textValue += `$ ${linuxInput.value}\n`;
+          textValue += `${value}\n`;
           textValue += `================================================\n`;
         }
 

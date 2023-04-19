@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 const {
@@ -5,6 +7,7 @@ const {
   typingLinux,
   windowLoad,
   updateFile,
+  updateConfigTxt,
 } = require("../../controllers/home");
 
 const BASE_URL = "/";
@@ -25,7 +28,7 @@ module.exports = (app) => {
     updateFile(req, res);
   });
 
-  // hash 변경시 파일 및 디렉토리 확인
+  // hash 변경시 파일, 디렉토리 찾기
   router.get("/api/load", (req, res) => {
     windowLoad(req, res);
   });
@@ -35,7 +38,12 @@ module.exports = (app) => {
     typingLinux(req, res);
   });
 
-  router.delete("/", (req, res) => {});
+  // config.txt 수정
+  router.put("/config", (req, res) => {
+    updateConfigTxt(req, res);
+  });
+
+  // router.delete("/", (req, res) => {});
 
   app.use(BASE_URL, router);
 };

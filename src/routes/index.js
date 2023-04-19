@@ -1,3 +1,5 @@
+"use strict";
+
 const HomeRoute = require("./modules/home");
 
 module.exports = (app) => {

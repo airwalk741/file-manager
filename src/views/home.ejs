@@ -10,19 +10,28 @@
       href="/bootstrap/bootstrap.min.css"
     />
     <link rel="stylesheet" type="text/css" href="/views/home.css" />
+
+    <script src="/views/codemirror/codemirror.min.js"></script>
+    <link rel="stylesheet" href="/views/codemirror/codemirror.min.css" />
   </head>
 
   <body>
     <script src="/bootstrap/bootstrap.js" type="module"></script>
     <script src="/views/table.js" type="module"></script>
     <script src="/views/linux.js" type="module"></script>
+    <script src="/views/config/config.js" type="module"></script>
+    <script src="/views/config/config.values.js" type="module"></script>
 
     <div class="layerPopup">
       <div class="spinner"></div>
     </div>
 
+    <div class="alert alert-primary text-center" role="alert">변경 완료</div>
+    <div class="alert alert-danger text-center" role="alert">에러</div>
+
     <div class="m-5">
       <div class="row">
+        <!-- 상단 테이블 리스트 -->
         <div class="mb-5 col">
           <div class="d-flex justify-content-between mb-4">
             <select
@@ -51,6 +60,7 @@
           </div>
         </div>
 
+        <!-- 리눅스 부분 -->
         <div class="col">
           <div class="">
             <textarea
@@ -70,17 +80,16 @@
         </div>
       </div>
 
-      <div class="row mt-5">
-        <div class="alert alert-primary text-center" role="alert">
-          변경 완료
-        </div>
-        <div class="alert alert-danger text-center" role="alert">에러</div>
+      <!-- 파일 수정 -->
+      <div class="row mt-5 test">
         <textarea
           class="form-control mb-4 file-update-text"
           id=""
           rows="15"
         ></textarea>
-        <div class="d-flex justify-content-between align-items-center">
+        <div
+          class="d-flex justify-content-between align-items-center border-top pt-3"
+        >
           <span class="update-file-name"></span>
           <div>
             <button type="button" class="btn btn-primary file-update-btn">
@@ -90,6 +99,19 @@
               취소
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- config 파일 -->
+      <div class="mt-5">
+        <div class="device-name col-6">
+          <div class="config-file-info-btn-container"></div>
+          <table class="table table-bordered device-infos-table">
+            <tbody class="text-center"></tbody>
+          </table>
+        </div>
+        <div class="device-list-container-for-delete">
+          <div class="device-list-container p-4 row"></div>
         </div>
       </div>
     </div>
