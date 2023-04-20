@@ -19,15 +19,9 @@ const windowLoad = (req, res) => {
   const decodeSpace = decodeURIComponent(spacing);
   let value = "";
   if (decodeSpace === "true") {
-    value = `
-      cd "${currentLocation}"
-      ls -a
-    `;
+    value = `cd "${currentLocation}" & ls -a`;
   } else {
-    value = `
-      cd ${currentLocation}
-      ls -a
-    `;
+    value = `cd ${currentLocation} & ls -a`;
   }
 
   // 실행코드 (ls -a)
@@ -94,15 +88,8 @@ const typingLinux = (req, res) => {
 
     value =
       currentLocation === __dirname
-        ? `
-      ${text}
-      pwd
-    `
-        : `
-    cd ${currentLocation} 
-    ${text} 
-    pwd
-    `;
+        ? `${text} & pwd`
+        : `cd ${currentLocation} & ${text} & pwd`;
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);
@@ -114,10 +101,7 @@ const typingLinux = (req, res) => {
       }
     });
   } else {
-    const value = `
-      cd "${currentLocation}"
-      ${text}
-    `;
+    const value = `cd "${currentLocation}" & ${text}`;
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);
