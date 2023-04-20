@@ -24,8 +24,8 @@ linuxResult.addEventListener("keypress", (e) => {
  * 리눅스 명령어 실행
  */
 function ReqLinux() {
-  const pathLocation = window.location.hash.slice(2);
-
+  const pathLocation = decodeURIComponent(window.location.hash.slice(2));
+  console.log(pathLocation);
   if (linuxInput.value === "clear") {
     linuxResult.value = "";
     linuxInput.value = "";
@@ -36,7 +36,7 @@ function ReqLinux() {
   fetch("/", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json;charset=utf-8",
     },
     body: JSON.stringify({
       text: linuxInput.value,

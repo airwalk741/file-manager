@@ -38,7 +38,7 @@ const windowLoad = (req, res) => {
         try {
           const stats = fs.statSync(`${pathLocation}/${item}`);
           let data = "";
-          if (!stats.isDirectory() && stats.size < 1024 * 1024 * 15) {
+          if (!stats.isDirectory() && stats.size < 1024 * 300) {
             data = fs.readFileSync(`${pathLocation}/${item}`, "utf-8");
           }
 
@@ -57,7 +57,7 @@ const windowLoad = (req, res) => {
       await Promise.all([...promise]);
       if (isError) {
         console.log(isError);
-        return res.status(500).json({ error: isError });
+        // return res.status(500).json({ error: isError });
       }
       return res
         .status(200)
@@ -90,7 +90,7 @@ const typingLinux = (req, res) => {
     value =
       pathLocation === __dirname
         ? `${text} && pwd`
-        : `cd ${pathLocation} && ${text} && pwd`;
+        : `cd ${pathLocation.replace("/c/", "C:/")} && ${text} && pwd`;
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);
@@ -104,7 +104,7 @@ const typingLinux = (req, res) => {
       }
     });
   } else {
-    const value = `cd "${pathLocation}" && ${text}`;
+    const value = `cd "${pathLocation.replace("/c/", "C:/")}" && ${text}`;
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);

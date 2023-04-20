@@ -46,7 +46,7 @@ fileUpdateBtn.addEventListener("click", () => {
   fetch("/files", {
     method: "PUT",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json;charset=utf-8",
     },
     body: JSON.stringify({
       text: editor.getValue(),
@@ -150,7 +150,7 @@ function ReqLoadItem() {
   fetch(requrl, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json;charset=utf-8",
     },
     params: {},
   })
@@ -285,9 +285,11 @@ function drawTable() {
         });
         typetd.setAttribute("class", "folder-color");
       } else {
-        nametd.addEventListener("click", () => {
-          readFile(item);
-        });
+        if (item.data) {
+          nametd.addEventListener("click", () => {
+            readFile(item);
+          });
+        }
       }
 
       if (item.data || item.folder) {

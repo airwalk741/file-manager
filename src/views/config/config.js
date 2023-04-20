@@ -531,7 +531,7 @@ async function updateFileInfo(text, targetFile) {
     const response = await fetch("/config", {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify({
         resultText,
@@ -701,7 +701,7 @@ async function savePointBtnClick(deviceIndex, count, targetFile) {
     const response = await fetch("/config", {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify({
         resultText,
