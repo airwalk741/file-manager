@@ -24,6 +24,8 @@ linuxResult.addEventListener("keypress", (e) => {
  * 리눅스 명령어 실행
  */
 function ReqLinux() {
+  const pathLocation = window.location.hash.slice(2);
+
   if (linuxInput.value === "clear") {
     linuxResult.value = "";
     linuxInput.value = "";
@@ -38,6 +40,7 @@ function ReqLinux() {
     },
     body: JSON.stringify({
       text: linuxInput.value,
+      pathLocation: pathLocation,
     }),
   })
     .then((response) => response.json())
@@ -49,17 +52,13 @@ function ReqLinux() {
       } else {
         const { linuxText } = data;
 
-        let textValue = "";
-
         for (let item of linuxText) {
           // const value = item.replaceAll("\n", "\t");
           const value = item;
-          textValue += `$ ${linuxInput.value}\n`;
-          textValue += `${value}\n`;
-          textValue += `================================================\n`;
+          linuxResult.value += `$ ${linuxInput.value}\n`;
+          linuxResult.value += `${value}\n`;
+          linuxResult.value += `================================================\n`;
         }
-
-        linuxResult.value = textValue;
 
         currentLocation.innerText = data.currentLocation;
 
@@ -67,12 +66,15 @@ function ReqLinux() {
           `/files/#/${data.currentLocation}`
         );
       }
+      // input 명령어 초기화 및 textarea 아래로
       linuxInput.value = "";
+      linuxResult.scrollTop = linuxResult.scrollHeight;
       endLoading();
     })
     .catch((err) => {
       console.log(err);
       linuxInput.value = "";
+      linuxResult.scrollTop = linuxResult.scrollHeight;
       endLoading();
     });
 }

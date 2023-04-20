@@ -4,10 +4,10 @@ const { exec, spawn } = require("child_process");
 const fs = require("fs");
 
 // javascript exec가 위치(경로)를 저장하지 못합니다. (exec 실행 끝나면 서버 실행 경로로 돌아갑니다.)
-// 그래서 위치를 저장해야합니다.
 // 저장된 위치를 먼저 이동한 후 text로 입력된 리눅스 명령어를 실행해야합니다.
 // example
 // cd [저장된 경로] && ls
+// 서버 시작 경로
 let currentLocation = process.execPath;
 
 let linuxText = [];
@@ -15,13 +15,13 @@ let linuxText = [];
 // table 아이템 정의
 const windowLoad = (req, res) => {
   const { path, spacing } = req.query;
-  currentLocation = decodeURIComponent(path).replace("/c", "C:");
+  const pathLocation = decodeURIComponent(path).replace("/c/", "C:/");
   const decodeSpace = decodeURIComponent(spacing);
   let value = "";
   if (decodeSpace === "true") {
-    value = `cd "${currentLocation}" & ls`;
+    value = `cd "${pathLocation}" && ls`;
   } else {
-    value = `cd ${currentLocation} & ls`;
+    value = `cd ${pathLocation} && ls`;
   }
 
   // 실행코드 (ls -a)
@@ -31,16 +31,15 @@ const windowLoad = (req, res) => {
       return res.status(500).json({ error, stderr });
     } else {
       const fileList = [];
-
       const items = stdout.split("\n");
       items.pop();
       let isError = false;
       const promise = items.map(async (item) => {
         try {
-          const stats = fs.statSync(`${currentLocation}/${item}`);
+          const stats = fs.statSync(`${pathLocation}/${item}`);
           let data = "";
           if (!stats.isDirectory() && stats.size < 1024 * 1024 * 15) {
-            data = fs.readFileSync(`${currentLocation}/${item}`, "utf-8");
+            data = fs.readFileSync(`${pathLocation}/${item}`, "utf-8");
           }
 
           fileList.push({
@@ -49,7 +48,7 @@ const windowLoad = (req, res) => {
             size: stats.size,
             mtime: stats.mtime.getTime(),
             data,
-            path: `${currentLocation}/${item}`,
+            path: `${pathLocation}/${item}`,
           });
         } catch (err) {
           isError = err;
@@ -60,7 +59,9 @@ const windowLoad = (req, res) => {
         console.log(isError);
         return res.status(500).json({ error: isError });
       }
-      return res.status(200).json({ stdout, fileList, currentLocation });
+      return res
+        .status(200)
+        .json({ stdout, fileList, currentLocation: pathLocation });
     }
   });
 };
@@ -73,7 +74,7 @@ const homeView = (req, res) => {
       console.log(error);
       return res.status(500).json({ error, stderr });
     } else {
-      currentLocation = stdout.replace("\n", "").replace("/c", "C:");
+      currentLocation = stdout.replace("\n", "").replace("/c/", "C:/");
       return res.render("home", { location: currentLocation });
     }
   });
@@ -81,34 +82,38 @@ const homeView = (req, res) => {
 
 // 리눅스 명령어 입력 (cd와 아닐때 구분)
 const typingLinux = (req, res) => {
-  const { text } = req.body;
+  const { text, pathLocation } = req.body;
 
   if (text.slice(0, 2) === "cd") {
     let value = "";
 
     value =
-      currentLocation === __dirname
-        ? `${text} & pwd`
-        : `cd ${currentLocation} & ${text} & pwd`;
+      pathLocation === __dirname
+        ? `${text} && pwd`
+        : `cd ${pathLocation} && ${text} && pwd`;
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);
         return res.status(500).json({ error, stderr });
       } else {
-        currentLocation = stdout.replace("\n", "");
+        const nextLocation = stdout.replace("\n", "");
         linuxText.push(stdout);
-        return res.status(200).json({ stdout, currentLocation, linuxText });
+        return res
+          .status(200)
+          .json({ stdout, currentLocation: nextLocation, linuxText });
       }
     });
   } else {
-    const value = `cd "${currentLocation}" & ${text}`;
+    const value = `cd "${pathLocation}" && ${text}`;
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);
         return res.status(500).json({ error, stderr });
       } else {
         linuxText.push(stdout);
-        return res.status(200).json({ stdout, currentLocation, linuxText });
+        return res
+          .status(200)
+          .json({ stdout, currentLocation: pathLocation, linuxText });
       }
     });
   }
