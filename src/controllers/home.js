@@ -7,7 +7,7 @@ const fs = require("fs");
 // 그래서 위치를 저장해야합니다.
 // 저장된 위치를 먼저 이동한 후 text로 입력된 리눅스 명령어를 실행해야합니다.
 // example
-// cd [저장된 경로] && ls -a
+// cd [저장된 경로] && ls
 let currentLocation = process.execPath;
 
 let linuxText = [];
@@ -15,13 +15,13 @@ let linuxText = [];
 // table 아이템 정의
 const windowLoad = (req, res) => {
   const { path, spacing } = req.query;
-  currentLocation = decodeURIComponent(path);
+  currentLocation = decodeURIComponent(path).replace("/c", "C:");
   const decodeSpace = decodeURIComponent(spacing);
   let value = "";
   if (decodeSpace === "true") {
-    value = `cd "${currentLocation}" & ls -a`;
+    value = `cd "${currentLocation}" & ls`;
   } else {
-    value = `cd ${currentLocation} & ls -a`;
+    value = `cd ${currentLocation} & ls`;
   }
 
   // 실행코드 (ls -a)
@@ -73,7 +73,7 @@ const homeView = (req, res) => {
       console.log(error);
       return res.status(500).json({ error, stderr });
     } else {
-      currentLocation = stdout.replace("\n", "");
+      currentLocation = stdout.replace("\n", "").replace("/c", "C:");
       return res.render("home", { location: currentLocation });
     }
   });
