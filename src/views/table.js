@@ -283,7 +283,7 @@ function drawTable() {
         nametd.addEventListener("click", () => {
           goDirectory(item);
         });
-        typetd.style.color = "blue";
+        typetd.setAttribute("class", "folder-color");
       } else {
         nametd.addEventListener("click", () => {
           readFile(item);

@@ -18,3 +18,5 @@ export const configFileUpdateBtn = document.querySelector(
 export const configFileCancelBtn = document.querySelector(
   ".config-file-cancel-btn"
 );
+
+export const configContainer = document.querySelector(".config-container");

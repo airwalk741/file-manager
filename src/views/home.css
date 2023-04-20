@@ -90,3 +90,65 @@ tr {
 .config-file-info {
   display: none;
 }
+
+* {
+  font-family: Open Sans, sans-serif !important;
+  color: #525f7f !important;
+}
+
+.btn-primary {
+  color: #fff !important;
+  background-color: #5e72e4;
+  border-color: #5e72e4;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.btn-primary:hover {
+  color: #fff !important;
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-danger {
+  color: #fff !important;
+  background-color: #f5365c;
+  border-color: #f5365c;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+html,
+body {
+  margin: 0;
+  font-family: Open Sans, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #525f7f;
+  text-align: left;
+  background-color: #f3f2f2;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 0.375rem;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.5rem;
+}
+
+.config-container {
+  display: none;
+}
+
+.folder-color {
+  color: rgb(233, 99, 90) !important;
+}

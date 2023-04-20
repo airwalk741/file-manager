@@ -4,6 +4,7 @@ import {
   deviceInfosTableBody,
   deviceListContainer,
   configFileInfoBtnContainer,
+  configContainer,
 } from "/views/config/config.values.js";
 
 import { startLoading, endLoading, startAlert } from "/views/values.js";
@@ -29,10 +30,11 @@ export const configParsing = (text, file) => {
     targetParsingText = data;
   } catch (err) {
     // 에러나면 config 파일이 아니므로 그냥 파일 text 열기
-    // console.log(err);
+    console.log(err);
     defaultFile.style.display = "block";
     defaultFile.style.position = "relative";
     configFileInfoBtnContainer.style.display = "none";
+    configContainer.style.display = "none";
     deviceInfosTableBody.replaceChildren();
     deviceListContainer.replaceChildren();
   }
@@ -99,6 +101,7 @@ export const makeInfoHTml = (data) => {
   configFileInfoBtnContainer.replaceChildren();
   deviceInfosTableBody.replaceChildren();
   deviceListContainer.replaceChildren();
+  configContainer.style.display = "block";
 
   // 파일 이름, 수정, 취소
   const infoBtnContainer = createHtml("div");
@@ -108,7 +111,7 @@ export const makeInfoHTml = (data) => {
   );
 
   const fileNameSpan = createHtml("span");
-  fileNameSpan.textContent = file.name;
+  fileNameSpan.textContent = `File: ${file.name}`;
 
   const btnContainer = createHtml("div");
   const updateBtn = createHtml("button");
@@ -760,7 +763,6 @@ function parsingText(text, file) {
     //  디바이스 정보
     const DeviceInfo = configList[3 + i].split("/");
     const DeviceName = DeviceInfo[0].replace(`Q${i + 1}`, "");
-
     //  좌표
     const PTPoints = DeviceInfo[2].split(";");
     const TVPoints = DeviceInfo[4].split(";");

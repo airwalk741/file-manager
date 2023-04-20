@@ -118,14 +118,12 @@ const typingLinux = (req, res) => {
       cd "${currentLocation}"
       ${text}
     `;
-
     exec(value, (error, stdout, stderr) => {
       if (error !== null) {
         console.log(error);
         return res.status(500).json({ error, stderr });
       } else {
         linuxText.push(stdout);
-
         return res.status(200).json({ stdout, currentLocation, linuxText });
       }
     });

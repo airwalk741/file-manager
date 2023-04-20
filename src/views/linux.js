@@ -43,7 +43,9 @@ function ReqLinux() {
     .then((response) => response.json())
     .then((data) => {
       if (data.error) {
-        linuxResult.value = data.stderr;
+        linuxResult.value += `$ ${linuxInput.value}\n`;
+        linuxResult.value += data.stderr;
+        linuxResult.value += `================================================\n`;
       } else {
         const { linuxText } = data;
 
@@ -70,6 +72,7 @@ function ReqLinux() {
     })
     .catch((err) => {
       console.log(err);
+      linuxInput.value = "";
       endLoading();
     });
 }
