@@ -43,15 +43,17 @@ export const endLoading = () => {
  * 메세지
  * @param {number} status 200 ok else err
  */
-export const startAlert = (status) => {
+export const startAlert = (status, text) => {
   if (status === 200) {
     alertPrimary.style.display = "block";
+    alertPrimary.textContent = text;
     setTimeout(() => {
       alertPrimary.style.display = "none";
     }, 1500);
   } else {
     alertDanger.style.display = "block";
     alertDanger.style.display = "block";
+    alertDanger.textContent = text;
     setTimeout(() => {
       alertDanger.style.display = "none";
     }, 1500);

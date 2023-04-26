@@ -551,14 +551,14 @@ async function updateFileInfo(text, targetFile) {
 
     updateNewFileList(newFileList);
     endLoading();
-    startAlert(200);
+    startAlert(200, "변경완료");
 
     if (!response.ok) {
       throw new Error("server err");
     }
   } catch (err) {
     console.log(err);
-    startAlert(500);
+    startAlert(500, "오류");
     endLoading();
   }
 }
@@ -721,7 +721,7 @@ async function savePointBtnClick(deviceIndex, count, targetFile) {
 
     updateNewFileList(newFileList);
     endLoading();
-    startAlert(200);
+    startAlert(200, "변경완료");
 
     targetParsingText = parsingText(resultText, targetFile);
 
@@ -730,7 +730,7 @@ async function savePointBtnClick(deviceIndex, count, targetFile) {
     }
   } catch (err) {
     console.log(err);
-    startAlert(500);
+    startAlert(500, "오류");
     endLoading();
   }
 }

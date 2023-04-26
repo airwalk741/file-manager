@@ -152,3 +152,39 @@ body {
 .folder-color {
   color: rgb(233, 99, 90) !important;
 }
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container-form {
+  width: 450px;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 500;
+  font-size: 1.0625rem !important;
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+#pageMessages {
+  position: fixed;
+  top: 15px;
+  right: 50%;
+  left: 50%;
+  width: 30%;
+}
+
+.main-ui {
+  visibility: hidden;
+}
+
+body {
+  overflow: hidden;
+}

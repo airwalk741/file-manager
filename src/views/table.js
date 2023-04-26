@@ -66,9 +66,9 @@ fileUpdateBtn.addEventListener("click", () => {
           return file;
         });
         drawTable();
-        startAlert(200);
+        startAlert(200, "변경 완료");
       } else {
-        startAlert(500);
+        startAlert(500, "오류");
       }
       endLoading();
     })
@@ -122,7 +122,7 @@ window.addEventListener("load", () => {
 });
 
 /**
- * URL 현경 추적
+ * URL 변경 추적
  * @param {*} e
  */
 function locationHashChanged(e) {
@@ -186,10 +186,32 @@ function goDirectory(directory) {
 /**
  * 파일 선택
  * config 파일이면 config 관련, 아니면 그냥 text
+ * 다른 유저가 사용하고 있으면 경고창
  * @param {*} file
  */
-function readFile(file) {
+async function readFile(file) {
   if (file.data) {
+    if (file.path !== targetFile.path) {
+      try {
+        const res = await fetch("/files", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({
+            beforeFile: targetFile,
+            currentOpenFile: file,
+          }),
+        });
+
+        if (res.status === 403) {
+          alert("다른 유저가 사용하고 있습니다.");
+          return;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
     configParsing(file.data, file);
     targetFile = file;
     fileUpdateText.value = file.data;
@@ -314,3 +336,18 @@ export function updateNewFileList(newData) {
   fileList = newData;
   drawTable();
 }
+
+// 새로고침 하기 전에 현재 사용하고 있는 파일이 있으면 그 파일 사용안한다고 알려줘야함.
+window.addEventListener("beforeunload", async () => {
+  if (targetFile) {
+    await fetch("/files", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify({
+        beforeFile: targetFile,
+      }),
+    });
+  }
+});

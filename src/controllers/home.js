@@ -36,11 +36,12 @@ const windowLoad = (req, res) => {
       let isError = false;
       const promise = items.map(async (item) => {
         try {
-          const stats = fs.statSync(`${pathLocation}/${item}`);
           let data = "";
+          const stats = fs.statSync(`${pathLocation}/${item}`);
           if (!stats.isDirectory() && stats.size < 1024 * 300) {
             data = fs.readFileSync(`${pathLocation}/${item}`, "utf-8");
           }
+          if (data.includes("login_password")) return;
 
           fileList.push({
             folder: stats.isDirectory(),
@@ -150,10 +151,40 @@ const updateConfigTxt = (req, res) => {
   }
 };
 
+// 한 파일당 한 유저만 접근할 수 있다.ㄴ
+const openUserFile = (req, res) => {
+  const { beforeFile, currentOpenFile } = req.body;
+
+  try {
+    if (beforeFile) {
+      const newUsingFile = [];
+      for (let item of usingFile) {
+        if (item !== beforeFile.path) {
+          newUsingFile.push(item);
+        }
+      }
+      usingFile = newUsingFile;
+    }
+
+    if (currentOpenFile !== undefined) {
+      if (usingFile.includes(currentOpenFile.path)) {
+        return res.status(403).json({ err: 403 });
+      }
+      usingFile.push(currentOpenFile.path);
+    }
+
+    return res.status(200).json();
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ err });
+  }
+};
+
 module.exports = {
   homeView,
   typingLinux,
   windowLoad,
   updateFile,
   updateConfigTxt,
+  openUserFile,
 };

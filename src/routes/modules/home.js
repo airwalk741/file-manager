@@ -8,7 +8,9 @@ const {
   windowLoad,
   updateFile,
   updateConfigTxt,
+  openUserFile,
 } = require("../../controllers/home");
+const { userLogin, getUser } = require("../../controllers/user");
 
 const BASE_URL = "/";
 
@@ -21,6 +23,11 @@ module.exports = (app) => {
   // hash를 이용해 directory 구분 (query)
   router.get("/files", (req, res) => {
     homeView(req, res);
+  });
+
+  // 파일 연 사람 등록
+  router.post("/files", (req, res) => {
+    openUserFile(req, res);
   });
 
   // 파일 변경
@@ -43,7 +50,15 @@ module.exports = (app) => {
     updateConfigTxt(req, res);
   });
 
-  // router.delete("/", (req, res) => {});
+  // 유저 로그인
+  router.post("/login", (req, res) => {
+    userLogin(req, res);
+  });
+
+  // 유저 확인 (로그인 후 새로고침시 로그인 폼 방지)
+  router.get("/login", (req, res) => {
+    getUser(req, res);
+  });
 
   app.use(BASE_URL, router);
 };

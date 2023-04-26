@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon index.js",
+    "serve": "NODE_ENV=develop nodemon index.js",
     "build": "pkg . --out-path dist"
   },
   "keywords": [],
@@ -22,12 +22,7 @@
   "pkg": {
     "scripts": "*.js",
     "targets": [
-      "node14-macos-arm64",
-      "node14-macos-x64",
-      "node14-linux-arm64",
-      "node14-linux-x64",
-      "node14-windows-arm64",
-      "node14-windows-x64"
+      "node14-macos-arm64"
     ],
     "assets": [
       "src/**/*"
