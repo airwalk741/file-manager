@@ -18,7 +18,7 @@
 
 #### 3. 동작 설명
 
-
+#### 4. 추가 기능
 
 
 
@@ -154,6 +154,41 @@ npm run build
 
 - UI만 변경 됐을 뿐 마찬가지로 수정할 텍스트 입력 후 저장 버튼 누르면 됩니다.
 - 취소 버튼 클릭시 해당 폼의 원래 값(원본 값)으로 돌아갑니다.
+
+
+
+
+
+---
+
+### 4. 추가 기능
+
+> 로그인 기능
+>
+> 중복 수정 막기
+
+
+
+1. 로그인 기능
+
+![image-20230427134640201](README.assets/image-20230427134640201.png)
+
+
+
+- 사용자 처음 입장 시 비밀번호를 입력해야합니다. 
+  - 비밀번호 설정은 `config/config.json` 에서 `login_password` 를 변경하면 됩니다.
+  - 이 파일은(패스워드 설정파일) 웹에서 검색되지 않게 했습니다.
+
+- 유저 관리는 따로 DB를 사용하지 않기 때문에 브라우저별 ID를 만들어 `loginUser`에 넣었습니다.`src/controllers/user.js`
+  - ID : `window.navigator.userAgent.replace(/\D+/g, "")`
+- 새로고침 시 `loginUser` 에 정보가 있는지 확인 후 있다면 `main` 페이지로 이동합니다.
+
+
+
+2. 중복 수정 막기 `src/controllers/user.js`
+
+- A 사용자가 `Desktop/file-manager/config.txt` 를 사용하고자 클릭한다면 `usingFile` 에 해당 경로를 담아둡니다.
+- B 사용자가 `Desktop/file-manager/config.txt` 를 사용하고자 클릭하면 `usingFile` 에 해당 경로가 있기때문에 사용하지 못한다는 경고창이 나옵니다.
 
 
 

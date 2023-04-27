@@ -8,9 +8,8 @@ const {
   windowLoad,
   updateFile,
   updateConfigTxt,
-  openUserFile,
 } = require("../../controllers/home");
-const { userLogin, getUser } = require("../../controllers/user");
+const { userLogin, getUser, openUserFile } = require("../../controllers/user");
 
 const BASE_URL = "/";
 

@@ -29,8 +29,36 @@ const getUser = (req, res) => {
     if (loginUser.includes(UUID)) {
       return res.status(200).json({});
     }
+    return res.status(400).json({});
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ err });
+  }
+};
 
-    return res.status(404).json({});
+// 한 파일당 한 유저만 접근할 수 있다.ㄴ
+const openUserFile = (req, res) => {
+  const { beforeFile, currentOpenFile } = req.body;
+
+  try {
+    if (beforeFile) {
+      const newUsingFile = [];
+      for (let item of usingFile) {
+        if (item !== beforeFile.path) {
+          newUsingFile.push(item);
+        }
+      }
+      usingFile = newUsingFile;
+    }
+
+    if (currentOpenFile !== undefined) {
+      if (usingFile.includes(currentOpenFile.path)) {
+        return res.status(403).json({ err: 403 });
+      }
+      usingFile.push(currentOpenFile.path);
+    }
+
+    return res.status(200).json();
   } catch (err) {
     console.log(err);
     return res.status(500).json({ err });
@@ -40,4 +68,5 @@ const getUser = (req, res) => {
 module.exports = {
   userLogin,
   getUser,
+  openUserFile,
 };

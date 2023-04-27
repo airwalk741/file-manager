@@ -51,7 +51,6 @@ loginBtn.addEventListener("click", async () => {
   loginInput.value = "";
 });
 
-getUser();
 async function getUser() {
   const params = {
     UUID: window.navigator.userAgent.replace(/\D+/g, ""),
@@ -77,4 +76,7 @@ async function getUser() {
     loginInput.value = "";
     return;
   }
+  console.log(res.status);
 }
+
+getUser();

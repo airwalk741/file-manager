@@ -22,17 +22,19 @@
 
 .alert-primary {
   position: fixed;
+  top: 10px;
   width: 300px;
   left: 40%;
-  z-index: 1000;
+  z-index: 10000;
   text-align: center;
   display: none;
 }
 .alert-danger {
+  top: 10px;
   position: fixed;
   width: 300px;
   left: 40%;
-  z-index: 1000;
+  z-index: 10000;
   text-align: center;
   display: none;
 }
@@ -173,13 +175,13 @@ h3 {
   margin-bottom: 35px;
 }
 
-#pageMessages {
+/* #pageMessages {
   position: fixed;
   top: 15px;
   right: 50%;
   left: 50%;
   width: 30%;
-}
+} */
 
 .main-ui {
   visibility: hidden;
