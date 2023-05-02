@@ -1,9 +1,12 @@
+"use strict";
+
 const { config } = require("../js/config");
 const { login_password } = config;
 
 // 한 파일당 한 유저만 접근할 수 있도록 하기 위해 만듦
 let usingFile = [];
 
+// 로인인 한 유저 담아두기
 let loginUser = [];
 
 // 사용자 로그인
